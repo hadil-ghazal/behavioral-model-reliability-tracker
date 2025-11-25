@@ -7,4 +7,6 @@ joblib
 mlflow
 fastapi
 uvicorn[standard]
-
+pydantic
+streamlit
+requests
