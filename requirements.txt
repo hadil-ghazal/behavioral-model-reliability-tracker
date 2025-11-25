@@ -5,3 +5,6 @@ pyyaml
 google-cloud-storage
 joblib
 mlflow
+fastapi
+uvicorn[standard]
+
