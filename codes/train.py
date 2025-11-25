@@ -21,6 +21,9 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 from codes.load_data import load_processed_data_from_gcs
 
+#adding mlflow imports to track experiments via MLFlow 
+import mlflow
+import mlflow.sklearn
 
 def load_config():
     with open("configs/config.yaml") as f:
@@ -110,26 +113,45 @@ def main():
     df = load_processed_data_from_gcs() #loading processed data from GCS
     print("Loaded processed data shape from GCS:", df.shape)
 
-    #Splitting into train/val/test
-    (
-        X_train,
-        X_val,
-        X_test,
-        y_train,
-        y_val,
-        y_test,
-        feature_columns,
-    ) = split_data(df, config)
+    # configuring mlflow to use a local folder called mlruns
+    mlflow.set_tracking_uri("file:mlruns")
+    mlflow.set_experiment("behavioral-model-reliability")
 
-    model = train_model(X_train, y_train)       #training model   
+    # starting a new mlflow run to track this training execution
+    with mlflow.start_run():
 
-    #Evaluate the model
-    metrics = evaluate_model(model, X_train, X_val, X_test, y_train, y_val, y_test)
-    print("Model accuracy metrics:")
-    for name, value in metrics.items():
-        print(f"  {name}: {value:.4f}")
+        # log model-related parameters from the config file
+        mlflow.log_param("model_type", "logistic_regression")
+        mlflow.log_param("target_column", config["model"]["target"])
+        mlflow.log_param("test_size", config["model"]["test_size"])
+        mlflow.log_param("val_size", config["model"]["val_size"])
+        mlflow.log_param("random_state", config["model"]["random_state"])
 
-    save_model(model, feature_columns) #saving the model and feature columns
+        #Splitting into train/val/test
+        (
+            X_train,
+            X_val,
+            X_test,
+            y_train,
+            y_val,
+            y_test,
+            feature_columns,
+        ) = split_data(df, config)
+
+        model = train_model(X_train, y_train)       #training model   
+
+        #Evaluating the model
+        metrics = evaluate_model(model, X_train, X_val, X_test, y_train, y_val, y_test)
+        print("Model accuracy metrics:")
+        for name, value in metrics.items():
+            print(f"  {name}: {value:.4f}")
+            mlflow.log_metric(name, float(value))
+
+        save_model(model, feature_columns) #saving the model and feature columns
+
+        #logging model saved files artifacts into mlflow
+        mlflow.sklearn.log_model(model, artifact_path="model")
+        mlflow.log_artifact("models/feature_columns.joblib", artifact_path="artifacts")
 
 
 if __name__ == "__main__":
