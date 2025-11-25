@@ -199,6 +199,15 @@ git clone https://github.com/hadil-ghazal/behavioral-model-reliability-tracker.g
 cd behavioral-model-reliability-tracker
 ```
 
+### Step 1.5. Create and activate a virtual environment
+
+```bash
+python3 -m venv venv
+source venv/bin/activate
+pip install --upgrade pip
+```
+
+
 ### Step 2. Install dependencies
 
 ```bash
@@ -227,10 +236,21 @@ uvicorn codes.api:app --reload
 
 ```bash
 docker build -t behavioral-ml-reliability-api .
+docker run -p 8080:8080 behavioral-ml-reliability-api
+```
+then test you have API health message
+```bash
+curl http://localhost:8080/
 ```
 
-### Step 7. Deploy to Cloud Run  
-(*performed manually via UI or gcloud tools*)
+### Step 7. Deploy to Cloud Run using Google cloud Service
+(*already generated in this project files by HG. Can be performed manually via UI or gcloud tools*)
+Prerequisites: A google cloud account, a GCP project created using any name, cloud run API enabled, storage bucket creation, then upload the processed dataset by using "upload file" feature
+- 1. create service account and grant the role storage object viewer
+  2. download service account key (select JSON) and move it to repo as .json
+  3. add .json to gitignore
+  4. upload the container image associated with the project to the image bar and click create
+  5. test data using curl followed by the URL
 
 ### Step 8. Launch Streamlit frontend
 
