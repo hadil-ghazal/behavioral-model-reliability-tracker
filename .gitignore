@@ -211,3 +211,7 @@ gcp-service-account.json
 #adding manually to avoid data overrides
 data/raw/
 data/processed/*.csv
+
+#2. adding manually to avoid committing long experiment logs for efficiency
+mlruns/
+
