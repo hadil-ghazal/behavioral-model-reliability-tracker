@@ -9,3 +9,10 @@ model:
   test_size: 0.2
   val_size: 0.1
   random_state: 42
+
+cloud:
+  provider: "gcs"
+  project_id: "behavioral-ml-reliability"
+  bucket_name: "behavioral-ml-reliability-data"
+  processed_blob_name: "monthly_cashflow_features.csv"
+  credentials_file: "gcp-service-account.json"

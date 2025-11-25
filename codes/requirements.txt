@@ -1,0 +1,15 @@
+pandas # for loading csv
+numpy # for math and log transform
+scikit-learn # for logistic regression and train/test split
+pyyaml # for loading config.yaml / for pipeline reproducibility
+joblib # for saving trained model also for pipeline reproducibility
+mlflow # for experiment tracking 
+
+fastapi # for API serving
+uvicorn # FastAPI server engine for API local run
+
+python-multipart # to enable FastAPI to parse JSON/form / for API compatibility
+
+google-cloud-storage # for downloading processed data from GCS
+streamlit # for front end UI 
+requests # for streamlit API calls
